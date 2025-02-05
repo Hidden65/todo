@@ -5,7 +5,15 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
+const AUTH_TOKEN = process.env.AUTH_TOKEN || "mysecuretoken";
+
 app.get('/firebase-config', (req, res) => {
+  const token = req.query.token;
+
+  if (token !== AUTH_TOKEN) {
+    return res.status(403).json({ error: "Unauthorized access" });
+  }
+
   res.json({
     apiKey: process.env.FIREBASE_API_KEY,
     authDomain: process.env.FIREBASE_AUTH_DOMAIN,
